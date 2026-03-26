@@ -32,7 +32,16 @@ MiniDAO/
 - OneChain CLI installed
 - OneChain wallet with testnet ONE tokens
 
-## Installation & Deployment
+## 🚀 Deployment Status
+
+✅ **DEPLOYED TO ONECHAIN TESTNET**
+
+- **Package ID:** `0x8e214336cdfca7200561913716004c38718e0be358db91c2289e5099858f4157`
+- **Explorer:** [View on OneScan](https://onescan.cc/testnet/object/0x8e214336cdfca7200561913716004c38718e0be358db91c2289e5099858f4157)
+- **Network:** OneChain Testnet
+- **Deployment Date:** March 27, 2026
+
+## Installation & Setup
 
 ### 1. Setup OneChain
 
@@ -44,7 +53,17 @@ one client new-env --alias testnet --rpc https://rpc-testnet.onelabs.cc:443
 one client switch --env testnet
 ```
 
-### 2. Deploy Contract
+### 2. Run Frontend (Already Configured)
+
+The frontend is already configured with the deployed contract address.
+
+```bash
+cd MiniDAO/frontend
+npm install
+npm run dev
+```
+
+### 3. (Optional) Deploy Your Own Instance
 
 ```bash
 cd MiniDAO/contracts
@@ -52,20 +71,7 @@ one move build
 one client publish --gas-budget 50000000 .
 ```
 
-### 3. Configure Frontend
-
-Update `frontend/.env`:
-```
-VITE_PACKAGE_ID=0x<your_package_id>
-```
-
-### 4. Run Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
+Then update `frontend/.env` with your Package ID.
 
 ## Usage
 
