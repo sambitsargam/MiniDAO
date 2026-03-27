@@ -10,10 +10,10 @@ function Proposals() {
 
   const { data: proposalEvents, isLoading: loadingProposals } = useSuiClientQuery('queryEvents', {
     query: { MoveEventType: `${PACKAGE_ID}::governance::ProposalCreated` }, limit: 100,
-  });
+  }, { refetchInterval: 3000 });
   const { data: voteEvents, isLoading: loadingVotes } = useSuiClientQuery('queryEvents', {
     query: { MoveEventType: `${PACKAGE_ID}::governance::VoteCast` }, limit: 500,
-  });
+  }, { refetchInterval: 3000 });
 
   const proposals = proposalEvents?.data || [];
   const votes = voteEvents?.data || [];

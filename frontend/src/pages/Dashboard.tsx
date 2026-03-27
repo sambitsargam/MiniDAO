@@ -21,15 +21,15 @@ function Dashboard() {
   const [voteData, setVoteData] = useState({ daoId: '', proposalId: '', voteFor: true });
   const [selectedProposal, setSelectedProposal] = useState<any>(null);
 
-  const { data: daoEvents } = useSuiClientQuery('queryEvents', {
+  const { data: daoEvents, refetch: refetchDAOs } = useSuiClientQuery('queryEvents', {
     query: { MoveEventType: `${PACKAGE_ID}::governance::DAOCreated` }, limit: 50,
-  });
-  const { data: proposalEvents } = useSuiClientQuery('queryEvents', {
+  }, { refetchInterval: 3000 });
+  const { data: proposalEvents, refetch: refetchProposals } = useSuiClientQuery('queryEvents', {
     query: { MoveEventType: `${PACKAGE_ID}::governance::ProposalCreated` }, limit: 100,
-  });
-  const { data: voteEvents } = useSuiClientQuery('queryEvents', {
+  }, { refetchInterval: 3000 });
+  const { data: voteEvents, refetch: refetchVotes } = useSuiClientQuery('queryEvents', {
     query: { MoveEventType: `${PACKAGE_ID}::governance::VoteCast` }, limit: 500,
-  });
+  }, { refetchInterval: 3000 });
 
   const allDAOs = daoEvents?.data || [];
   const allProposals = proposalEvents?.data || [];
@@ -72,7 +72,7 @@ function Dashboard() {
       const tx = new Transaction();
       tx.moveCall({ target: `${PACKAGE_ID}::governance::create_dao`, arguments: [tx.pure.string(daoData.name), tx.pure.string(daoData.description)] });
       signAndExecute({ transaction: tx }, {
-        onSuccess: () => { setMessage('✅ DAO created!'); setDaoData({ name: '', description: '' }); },
+        onSuccess: () => { setMessage('✅ DAO created!'); setDaoData({ name: '', description: '' }); refetchDAOs(); },
         onError: () => setMessage('❌ Failed to create DAO'),
       });
     } catch { setMessage('❌ Transaction failed'); }
@@ -97,7 +97,7 @@ function Dashboard() {
         ],
       });
       signAndExecute({ transaction: tx }, {
-        onSuccess: () => { setMessage('✅ Proposal created!'); setProposalData({ daoId: '', title: '', description: '', duration: '7' }); setAiScore(null); setAiAnalysis(''); },
+        onSuccess: () => { setMessage('✅ Proposal created!'); setProposalData({ daoId: '', title: '', description: '', duration: '7' }); setAiScore(null); setAiAnalysis(''); refetchProposals(); },
         onError: () => setMessage('❌ Failed to create proposal'),
       });
     } catch { setMessage('❌ Transaction failed'); }
@@ -114,7 +114,7 @@ function Dashboard() {
         arguments: [tx.object(voteData.daoId), tx.object(voteData.proposalId), tx.pure.bool(voteData.voteFor)],
       });
       signAndExecute({ transaction: tx }, {
-        onSuccess: () => { setMessage('✅ Vote cast successfully!'); setSelectedProposal(null); },
+        onSuccess: () => { setMessage('✅ Vote cast successfully!'); setSelectedProposal(null); refetchVotes(); },
         onError: () => setMessage('❌ Vote failed'),
       });
     } catch { setMessage('❌ Transaction failed'); }
